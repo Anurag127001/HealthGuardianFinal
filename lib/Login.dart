@@ -5,23 +5,22 @@ import 'package:sampleandro/patientsDashboard.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'carditem.dart';
 
-
 class UserTypeSelectionPage extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xff2F2E40),
         title: Center(
-            child: Text(
-          "Select User",
-          style: GoogleFonts.lato(
-            fontWeight: FontWeight.bold,
-            textStyle: TextStyle(color: Colors.white),
-            fontSize: 25,
+          child: Text(
+            "Select User",
+            style: GoogleFonts.lato(
+              fontWeight: FontWeight.bold,
+              textStyle: TextStyle(color: Colors.white),
+              fontSize: 25,
+            ),
           ),
-        )),
+        ),
       ),
       body: Center(
         child: Column(
@@ -83,6 +82,7 @@ class PatientLoginPage extends StatelessWidget {
             ),
             SizedBox(height: 20),
             TextFormField(
+              obscureText: true,
               controller: loginPatientIdController,
               decoration: InputDecoration(
                 labelText: "Password",
@@ -93,11 +93,10 @@ class PatientLoginPage extends StatelessWidget {
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: Color(0xff2F2E40),
-                foregroundColor: Colors.white
+                foregroundColor: Colors.white,
               ),
               onPressed: () {
-                login(context, 'Patients', loginEmailController.text,
-                    loginPatientIdController.text);
+                login(context, 'Patients', loginEmailController.text, loginPatientIdController.text);
               },
               child: Text('Login'),
             ),
@@ -112,7 +111,7 @@ class PatientLoginPage extends StatelessWidget {
       var result = await FirebaseFirestore.instance
           .collection(collection)
           .where('Email', isEqualTo: email)
-          .where('Patient ID', isEqualTo: patientId)
+          .where('Aadhar Number', isEqualTo: patientId)
           .get();
 
       if (result.docs.isNotEmpty) {
@@ -122,11 +121,14 @@ class PatientLoginPage extends StatelessWidget {
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Invalid login credentials. Patient not found.'),
+          content: Text('Invalid email or password. Please try again.'),
         ));
       }
     } catch (e) {
       print('Error during login: $e');
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('An error occurred during login. Please try again later.'),
+      ));
     }
   }
 }
@@ -134,11 +136,6 @@ class PatientLoginPage extends StatelessWidget {
 class DoctorLoginPage extends StatelessWidget {
   final TextEditingController loginNameController = TextEditingController();
   final TextEditingController loginUidController = TextEditingController();
-
-  var DoctorsName = "";
-  getDoctorsName(){
-    return DoctorsName;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -172,6 +169,7 @@ class DoctorLoginPage extends StatelessWidget {
             ),
             SizedBox(height: 20),
             TextFormField(
+              obscureText: true,
               controller: loginUidController,
               decoration: InputDecoration(
                 labelText: "Password",
@@ -181,13 +179,11 @@ class DoctorLoginPage extends StatelessWidget {
             SizedBox(height: 16.0),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xff2F2E40),
-                  foregroundColor: Colors.white
+                backgroundColor: Color(0xff2F2E40),
+                foregroundColor: Colors.white,
               ),
               onPressed: () {
-                login(context, 'Doctors', loginNameController.text,
-                    loginUidController.text);
-                DoctorsName = loginNameController.text;
+                login(context, 'Doctors', loginNameController.text, loginUidController.text);
               },
               child: Text('Login'),
             ),
@@ -197,8 +193,7 @@ class DoctorLoginPage extends StatelessWidget {
     );
   }
 
-  void login(
-      BuildContext context, String collection, String name, String uid) async {
+  void login(BuildContext context, String collection, String name, String uid) async {
     try {
       var result = await FirebaseFirestore.instance
           .collection(collection)
@@ -213,11 +208,14 @@ class DoctorLoginPage extends StatelessWidget {
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Invalid login credentials. Doctor not found.'),
+          content: Text('Invalid name or password. Please try again.'),
         ));
       }
     } catch (e) {
       print('Error during login: $e');
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('An error occurred during login. Please try again later.'),
+      ));
     }
   }
 }
@@ -245,191 +243,3 @@ void main() {
     home: UserTypeSelectionPage(),
   ));
 }
-
-// import 'package:flutter/material.dart';
-// import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:sampleandro/doctorsDashboard.dart';
-// import 'package:sampleandro/patientsDashboard.dart';
-//
-// class UserTypeSelectionPage extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         backgroundColor: Colors.greenAccent,
-//         title: Text('Select User'),
-//
-//       ),
-//       body: Center(
-//         child: Column(
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           children: [
-//             ElevatedButton(
-//               onPressed: () {
-//                 Navigator.push(
-//                   context,
-//                   MaterialPageRoute(builder: (context) => PatientLoginPage()),
-//                 );
-//               },
-//               child: Text('Patient'),
-//
-//             ),
-//             SizedBox(height: 16.0),
-//             ElevatedButton(
-//               onPressed: () {
-//                 Navigator.push(
-//                   context,
-//                   MaterialPageRoute(builder: (context) => DoctorLoginPage()),
-//                 );
-//               },
-//               child: Text('Doctor'),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-//
-// class PatientLoginPage extends StatelessWidget {
-//   final TextEditingController loginEmailController = TextEditingController();
-//   final TextEditingController loginPatientIdController = TextEditingController();
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         backgroundColor: Colors.greenAccent,
-//         title: Text('Patient Login'),
-//       ),
-//       body: Padding(
-//         padding: EdgeInsets.all(16.0),
-//         child: Column(
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           children: [
-//             TextField(
-//               controller: loginEmailController,
-//               decoration: InputDecoration(labelText: 'Email'),
-//             ),
-//             SizedBox(height: 8.0),
-//             TextField(
-//               controller: loginPatientIdController,
-//               decoration: InputDecoration(labelText: 'Patient ID'),
-//             ),
-//             SizedBox(height: 16.0),
-//             ElevatedButton(
-//               style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.greenAccent)),
-//               onPressed: () {
-//                 login(context, 'Patients', loginEmailController.text, loginPatientIdController.text);
-//               },
-//               child: Text('Login'),
-//
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-//
-//   void login(BuildContext context, String collection, String email, String patientId) async {
-//     try {
-//       var result = await FirebaseFirestore.instance.collection(collection).where('Email', isEqualTo: email).where('Patient ID', isEqualTo: patientId).get();
-//
-//       if (result.docs.isNotEmpty) {
-//         Navigator.pushReplacement(
-//           context,
-//           MaterialPageRoute(builder: (context) => Patientpage()),
-//         );
-//       } else {
-//         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-//           content: Text('Invalid login credentials. Patient not found.'),
-//         ));
-//       }
-//     } catch (e) {
-//       print('Error during login: $e');
-//     }
-//   }
-// }
-//
-// class DoctorLoginPage extends StatelessWidget {
-//   final TextEditingController loginNameController = TextEditingController();
-//   final TextEditingController loginUidController = TextEditingController();
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         backgroundColor: Colors.greenAccent,
-//         title: Text('Doctor Login'),
-//       ),
-//       body: Padding(
-//         padding: EdgeInsets.all(16.0),
-//         child: Column(
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           children: [
-//             TextField(
-//               controller: loginNameController,
-//               decoration: InputDecoration(labelText: 'Doctor Name'),
-//             ),
-//             SizedBox(height: 8.0),
-//             TextField(
-//               controller: loginUidController,
-//               decoration: InputDecoration(labelText: 'Doctor UID'),
-//             ),
-//             SizedBox(height: 16.0),
-//             ElevatedButton(
-//               style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.greenAccent)),
-//               onPressed: () {
-//                 login(context, 'Doctors', loginNameController.text, loginUidController.text);
-//               },
-//               child: Text('Login'),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-//
-//   void login(BuildContext context, String collection, String name, String uid) async {
-//     try {
-//       var result = await FirebaseFirestore.instance.collection(collection).where('Name', isEqualTo: name).where('UID', isEqualTo: uid).get();
-//
-//       if (result.docs.isNotEmpty) {
-//         Navigator.pushReplacement(
-//           context,
-//           MaterialPageRoute(builder: (context) => Doctorpage()),
-//         );
-//       } else {
-//         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-//           content: Text('Invalid login credentials. Doctor not found.'),
-//         ));
-//       }
-//     } catch (e) {
-//       print('Error during login: $e');
-//     }
-//   }
-// }
-//
-// class HomeScreen extends StatelessWidget {
-//   final String userType;
-//
-//   HomeScreen({required this.userType});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Home Screen - $userType'),
-//       ),
-//       body: Center(
-//         child: Text('Welcome to the Home Screen, $userType!'),
-//       ),
-//     );
-//   }
-// }
-//
-// void main() {
-//   runApp(MaterialApp(
-//     home: UserTypeSelectionPage(),
-//   ));
-// }

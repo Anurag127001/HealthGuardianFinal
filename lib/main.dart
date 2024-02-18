@@ -10,7 +10,6 @@ import 'doctorsDashboard.dart';
 import 'EnterPrescriptionData.dart';
 import 'list.dart';
 import 'Login.dart';
-import 'newuser.dart';
 import 'patientsDashboard.dart';
 import 'logintoDelete.dart';
 import 'firebase_options.dart';
